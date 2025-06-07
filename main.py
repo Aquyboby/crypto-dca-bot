@@ -12,7 +12,11 @@ COINS = {
 def get_price(coin_id):
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=eur"
     response = requests.get(url)
-    return response.json()[coin_id]["eur"]
+    data = response.json()
+    if coin_id not in data or "eur" not in data[coin_id]:
+        raise Exception(f"Erreur récupération prix pour {coin_id}: {data}")
+    return data[coin_id]["eur"]
+
 
 def get_ath_eur(coin_id):
     url = f"https://api.coingecko.com/api/v3/coins/{coin_id}"
