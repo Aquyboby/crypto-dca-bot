@@ -1,6 +1,13 @@
 import requests
 from datetime import datetime
 
+for coin_id, info in COINS.items():
+    current = get_price(coin_id)
+    time.sleep(1)  # ⬅️ pause anti rate-limit
+    ath = get_ath_eur(coin_id)
+    gap = 100 - (current / ath * 100)
+    invest = determine_investment(current, ath)
+    
 TELEGRAM_TOKEN = "8039064596:AAF2avPda5L_SQw8fqCMO6qquoCBYmtA_C4"
 CHAT_ID = "197984048"
 AUTHORIZED_CHAT_IDS = ["197984048"]
