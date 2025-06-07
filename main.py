@@ -1,13 +1,7 @@
 import requests
+import time
 from datetime import datetime
 
-for coin_id, info in COINS.items():
-    current = get_price(coin_id)
-    time.sleep(1)  # ⬅️ pause anti rate-limit
-    ath = get_ath_eur(coin_id)
-    gap = 100 - (current / ath * 100)
-    invest = determine_investment(current, ath)
-    
 TELEGRAM_TOKEN = "8039064596:AAF2avPda5L_SQw8fqCMO6qquoCBYmtA_C4"
 CHAT_ID = "197984048"
 AUTHORIZED_CHAT_IDS = ["197984048"]
@@ -20,10 +14,9 @@ def get_price(coin_id):
     url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=eur"
     response = requests.get(url)
     data = response.json()
-    if coin_id not in data or "eur" not in data[coin_id]:
+    if coin_id not in data:
         raise Exception(f"Erreur récupération prix pour {coin_id}: {data}")
     return data[coin_id]["eur"]
-
 
 def get_ath_eur(coin_id):
     url = f"https://api.coingecko.com/api/v3/coins/{coin_id}"
@@ -65,6 +58,7 @@ def main():
     message = f"*📊 Rapport Hebdo - {now}*\n\n"
     for coin_id, info in COINS.items():
         current = get_price(coin_id)
+        time.sleep(1)
         ath = get_ath_eur(coin_id)
         gap = 100 - (current / ath * 100)
         invest = determine_investment(current, ath)
@@ -78,8 +72,7 @@ def main():
     send_telegram_message(message, CHAT_ID)
 
 if __name__ == "__main__":
+    from keep_alive import keep_alive
+    keep_alive()
     main()
-
-from keep_alive import keep_alive
-keep_alive()
 
